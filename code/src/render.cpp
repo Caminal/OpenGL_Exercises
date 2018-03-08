@@ -197,19 +197,20 @@ namespace MyGeomShader {
 
 		static const GLchar * geom_shader_source[] = {
 			"#version 330                                        \n\
-		                                                         \n\
+                                                                 \n\
+		uniform float time;                                      \n\
 		layout(triangles) in;                                    \n\
 		layout(triangle_strip, max_vertices = 6) out;            \n\
 		                                                         \n\
 		void main()                                              \n\
 		{							                             \n\
-			vec4 offset = vec4(0.5,0.5,0.0,0.0);                 \n\
+			vec4 offset = vec4(0.5-sin(time),0.5,0.0,0.0);       \n\
 			for (int i = 0; i < 3; i++)                          \n\
 			{                                                    \n\
 				gl_Position = gl_in[i].gl_Position+offset;       \n\
 				EmitVertex();                                    \n\
 			}                                                    \n\
-			EndPrimitive();                                      \n\
+				EndPrimitive();                                  \n\
 			                                                     \n\
 			for (int i = 0; i < 3; i++)                          \n\
 			{                                                    \n\
@@ -279,9 +280,8 @@ namespace MyGeomShader {
 	void myRenderCode(double currentTime) {
 
 		glUseProgram(myRenderProgram);
+		glUniform1f(glGetUniformLocation(myRenderProgram, "time"), (GLfloat)currentTime);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
-
-
 	}
 }
 

@@ -212,7 +212,7 @@ namespace MyGeomShader {
 			EndPrimitive();                                      \n\
 		}"
 		};
-
+		//Prova
 		static const GLchar * fragment_shader_source[] =
 		{
 			"#version 330\n\

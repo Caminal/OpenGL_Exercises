@@ -199,7 +199,7 @@ namespace MyGeomShader {
 			"#version 330                                        \n\
 		                                                         \n\
 		layout(triangles) in;                                    \n\
-		layout(triangle_strip, max_vertices = 3) out;            \n\
+		layout(triangle_strip, max_vertices = 6) out;            \n\
 		                                                         \n\
 		void main()                                              \n\
 		{							                             \n\
@@ -210,6 +210,13 @@ namespace MyGeomShader {
 				EmitVertex();                                    \n\
 			}                                                    \n\
 			EndPrimitive();                                      \n\
+			                                                     \n\
+			for (int i = 0; i < 3; i++)                          \n\
+			{                                                    \n\
+				gl_Position = gl_in[i].gl_Position - offset;     \n\
+				EmitVertex();                                    \n\
+			}                                                    \n\
+				EndPrimitive();                                  \n\
 		}"
 		};
 		

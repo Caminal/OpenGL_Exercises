@@ -28,13 +28,11 @@ namespace Cube {
 	void drawCube();
 }
 
-namespace MyGeomShader {
+namespace  MyGeomShader {
 	void myInitCode();
 	void myCleanupCode();
 	void myRenderCode(double currentTime);
 }
-
-
 
 
 
@@ -111,6 +109,15 @@ void GLinit(int width, int height) {
 	Cube::setupCube();*/
 
 	MyGeomShader::myInitCode();
+
+
+
+
+
+
+
+
+
 }
 
 void GLcleanup() {
@@ -119,6 +126,7 @@ void GLcleanup() {
 	Cube::cleanupCube();
 	*/
 	MyGeomShader::myCleanupCode();
+
 }
 
 void GLrender(double currentTime) {
@@ -172,61 +180,132 @@ void linkProgram(GLuint program) {
 		delete[] buff;
 	}
 }
-/////////////////////////////////////////////////// My Geom Shader
-namespace MyGeomShader {
+
+/////////////////////////////////////My Geom Shader
+namespace  MyGeomShader {
 	GLuint myRenderProgram;
 	GLuint myVAO;
 
-
-	void myCleanupCode() {
-		glDeleteVertexArrays(1, &myVAO);
-		glDeleteProgram(myRenderProgram);
-	}
 	GLuint myShaderCompile(void) {
+		/*
 		static const GLchar * vertex_shader_source[] =
 		{
-			"#version 330                                                  \n\
-		                                                                   \n\
-		void main() {                                                      \n\
-		gl_Position = vec4(0.25, 0.25, 0.5, 1.0);                          \n\
-		}"
-		};
+		"#version 330\n\
+		\n\
+		void main() {\n\
+		const vec4 vertices[3] = vec4[3](vec4( 1, -0.25, 0.5, 1.0),\n\
+		vec4(0.25, 0.25, 0.5, 1.0),\n\
+		vec4( -0.25,  -0.25, 0.5, 1.0));\n\
+		gl_Position = vertices[gl_VertexID];\n\
+		}"	};*/
 
-		static const GLchar * geom_shader_source[] = {
-			"#version 330                                                  \n\
-                                                                           \n\
-		uniform float time;                                                \n\
-		layout(triangles) in;                                              \n\
-		layout(triangle_strip, max_vertices = 4) out;                      \n\
-        const vec4 vertices[4] = vec4[4](vec4(0.25, -0.25, 0.5, 1.0),      \n\
-			                             vec4(0.25, 0.25, 0.5, 1.0),       \n\
-			                             vec4(-0.25, -0.25, 0.5, 1.0),     \n\
-			                             vec4(-0.25, 0.25, 0.5, 1.0));     \n\
-	    vec4 offset = vec4(0.0, 0.0, 0.0, 0.5-sin(time));                  \n\
-		void main()                                                        \n\
-		{			                                                       \n\
-			for (int i = 0; i < 4; i++)                                    \n\
-			{                                                              \n\
-				gl_Position = vertices[i] + gl_in[0].gl_Position;          \n\
-				EmitVertex();                                              \n\
-			}                                                              \n\
-				EndPrimitive();                                            \n\
-		}"
-		};
-		
+
+		///To draw only 1 triangle:
+		static const GLchar * vertex_shader_source[] =
+		{
+			"#version 330\n\
+			\n\
+			void main() {\n\
+			gl_Position = vec4( 1, -0.25, 0.5, 1.0);\n\
+			}" };
+
+
+
 		static const GLchar * fragment_shader_source[] =
 		{
 			"#version 330\n\
-		\n\
-		out vec4 color;\n\
-		\n\
-		void main() {\n\
-		color = vec4(0.0,0.8,1.0,1.0);\n\
+			\n\
+			out vec4 color;\n\
+			\n\
+			void main() {\n\
+			color = vec4(0.0,0.8,1.0,1.0);\n\
+			}" };
+
+
+		
+		///to draw a triangle on each vertex:
+		/*static const GLchar * geom_shader_source[] =
+		{ "#version 330\n\
+		layout(triangles) in;\n\
+		layout(triangle_strip, max_vertices = 6) out;\n\
+		void main()\n\
+		{\n\
+		const vec4 vertices[3] = vec4[3](vec4(0.25, -0.25, 0.5, 1.0),\n\
+		vec4(0.25, 0.25, 0.5, 1.0),\n\
+		vec4(-0.25,  -0.25, 0.5, 1.0)); \n\
+		for (int i = 0; i <3; i++)\n\
+		{\n\
+		gl_Position = vertices[i] + gl_in[0].gl_Position;\n\
+		EmitVertex();\n\
+		}\n\
+		EndPrimitive();\n\
+		}" };
+		*/
+
+
+		
+		///to draw a square on each vertex from the vertex shader:
+		/*static const GLchar * geom_shader_source[] =
+		{ "#version 330										\n\
+		layout(triangles) in;							\n\
+		layout(triangle_strip, max_vertices =4)	out;\n\
+		const vec4 vertices[4] = vec4[4](vec4(0.25, -0.25, 0.5, 1.0),\n\
+		vec4(0.25, 0.25, 0.5, 1.0),\n\
+		vec4(-0.25,  -0.25, 0.5, 1.0),\n\
+		vec4(-0.25,  0.25, 0.5, 1.0)); \n\
+		void main(){									\n\
+		for(int i=0; i< 4; i++){						\n\
+		gl_Position =gl_in[0].gl_Position +vertices[i];	\n\
+		EmitVertex();								\n\
+		}												\n\
+		EndPrimitive();									\n\
+		}" 		};
+		*/
+
+		
+		///to draw a square based on a uniform variable:
+		/*static const GLchar * geom_shader_source[] =
+		{ "#version 330										\n\
+		uniform vec4 initPos;							\n\
+		layout(triangles) in;							\n\
+		layout(triangle_strip, max_vertices =4)	out;\n\
+		const vec4 vertices[4] = vec4[4](vec4(0.25, -0.25, 0.5, 1.0),\n\
+		vec4(0.25, 0.25, 0.5, 1.0),\n\
+		vec4(-0.25,  -0.25, 0.5, 1.0),\n\
+		vec4(-0.25,  0.25, 0.5, 1.0)); \n\
+		void main(){									\n\
+		for(int i=0; i< 4; i++){						\n\
+		gl_Position = initPos +vertices[i];	\n\
+		EmitVertex();								\n\
+		}												\n\
+		EndPrimitive();									\n\
+		}" };
+		*/
+
+
+
+		///exercise 7: make the cube face rotate (with trigonometry)
+		static const GLchar * geom_shader_source[] =
+		{
+		"#version 330																		\n\
+		uniform float time;																	\n\
+		uniform mat4 mvpMat;																\n\
+		layout(triangles) in;																\n\
+		layout(triangle_strip, max_vertices = 4) out;										\n\
+																							\n\
+		void main()																			\n\
+		{																					\n\
+			vec4 vertices[4] = vec4[4](vec4(0.25, -0.25, 0.5, 1.0),							\n\
+									   vec4(0.25, 0.25, 0.5, 1.0),						    \n\
+							           vec4(-0.25, -0.25, 0.5, 1.0),                        \n\
+							           vec4(-0.25, 0.25, 0.5, 1.0));					    \n\
+			for(int i= 0; i<4; i++){														\n\
+				gl_Position = mvpMat*vertices[i];											\n\
+				EmitVertex();																\n\
+			}																				\n\
+			EndPrimitive();																	\n\
 		}"
 		};
-
-
-
 
 		GLuint vertex_shader;
 		GLuint geom_shader;
@@ -236,7 +315,6 @@ namespace MyGeomShader {
 		vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vertex_shader, 1, vertex_shader_source, NULL);
 		glCompileShader(vertex_shader);
-
 
 		geom_shader = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(geom_shader, 1, geom_shader_source, NULL);
@@ -257,23 +335,29 @@ namespace MyGeomShader {
 		glDeleteShader(fragment_shader);
 
 		return program;
+
 	}
 
+	void myCleanupCode() {
+		glDeleteVertexArrays(1, &myVAO);
+		glDeleteProgram(myRenderProgram);
+	}
 
 	void  myInitCode(void) {
-
 		myRenderProgram = myShaderCompile();
 		glCreateVertexArrays(1, &myVAO);
 		glBindVertexArray(myVAO);
-
-
 	}
 
-
+	///exercise 7 b: make the cube face rotate (with transformation matrix)
+	glm::mat4 myMVP;
 	void myRenderCode(double currentTime) {
-
 		glUseProgram(myRenderProgram);
 		glUniform1f(glGetUniformLocation(myRenderProgram, "time"), (GLfloat)currentTime);
+		//glm::mat4 rot = glm::rotate(glm::mat4(),0.05f, glm::vec3(0.0f, 1.0f, 0.0f));
+		//myMVP = rot * myMVP;
+		glUniformMatrix4fv(glGetUniformLocation(myRenderProgram, "mvpMat"), 1, GL_FALSE, glm::value_ptr(myMVP));
+	
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
 }

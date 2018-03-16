@@ -203,10 +203,10 @@ namespace  MyGeomShader {
 		///To draw only 1 triangle:
 		static const GLchar * vertex_shader_source[] =
 		{
-			"#version 330											\n\
-																	\n\
-			void main() {											\n\
-			gl_Position = vec4( 1, -0.25, 0.5, 1.0);				\n\
+			"#version 330														\n\
+																				\n\
+			void main() {														\n\
+			gl_Position = vec4( 1, -0.25, 0.5, 1.0);							\n\
 			}" };
 
 
@@ -218,12 +218,12 @@ namespace  MyGeomShader {
 			out vec4 color;														\n\
 																				\n\
 			void main() {														\n\
-			const vec4 colors[6] = vec4[6](vec4( 0, 1, 0, 1.0),					\n\
-											vec4(0.25, 0.25, 0.5, 1.0),			\n\
-											vec4( 1, 0.25, 0.5, 1.0),			\n\
-											vec4(0.25, 0, 0, 1.0),				\n\
-											vec4( 1, 0, 0, 1.0),				\n\
-											vec4( 0.25, 0.25, 0.5, 1.0));		\n\
+			const vec4 colors[6] = vec4[6](vec4( 1, 0, 0, 1.0),					\n\
+										   vec4(0, 1, 0, 1.0),					\n\
+										   vec4( 0, 0, 1, 1.0),			    	\n\
+										   vec4(0.5, 0, 0.5, 1.0),				\n\
+										   vec4( 0.5, 0.5, 0, 1.0),				\n\
+										   vec4( 0, 0.5, 0.5, 1.0));			\n\
 			color = colors[gl_PrimitiveID ];									\n\
 			}" };
 
@@ -369,7 +369,7 @@ namespace  MyGeomShader {
 				for (int i = 0; i<4; i++)														\n\
 				{																				\n\
 					gl_Position = rotation*vertices2[i]+gl_in[0].gl_Position;					\n\
-gl_PrimitiveID = 1;																				\n\
+					gl_PrimitiveID = 1;															\n\
 					EmitVertex();																\n\
 				}																				\n\
 				EndPrimitive();																	\n\
@@ -381,7 +381,7 @@ gl_PrimitiveID = 1;																				\n\
 				for (int i = 0; i<4; i++)														\n\
 				{																				\n\
 					gl_Position = rotation*vertices3[i]+gl_in[0].gl_Position;					\n\
-gl_PrimitiveID = 2;																				\n\
+					gl_PrimitiveID = 2;															\n\
 					EmitVertex();																\n\
 				}																				\n\
 				EndPrimitive();																	\n\
@@ -393,7 +393,7 @@ gl_PrimitiveID = 2;																				\n\
 				for (int i = 0; i<4; i++)														\n\
 				{																				\n\
 					gl_Position = rotation*vertices4[i]+gl_in[0].gl_Position;					\n\
-gl_PrimitiveID = 3;																				\n\
+					gl_PrimitiveID = 3;															\n\
 					EmitVertex();																\n\
 				}																				\n\
 				EndPrimitive();																	\n\
@@ -405,7 +405,7 @@ gl_PrimitiveID = 3;																				\n\
 				for (int i = 0; i<4; i++)														\n\
 				{																				\n\
 					gl_Position = rotation*vertices5[i]+gl_in[0].gl_Position;					\n\
-gl_PrimitiveID = 4;																				\n\
+					gl_PrimitiveID = 4;															\n\
 					EmitVertex();																\n\
 				}																				\n\
 				EndPrimitive();																	\n\
@@ -417,7 +417,7 @@ gl_PrimitiveID = 4;																				\n\
 				for (int i = 0; i<4; i++)														\n\
 				{																				\n\
 					gl_Position = rotation*vertices6[i]+gl_in[0].gl_Position;					\n\
-gl_PrimitiveID = 5;																				\n\
+					gl_PrimitiveID = 5;															\n\
 					EmitVertex();																\n\
 				}																				\n\
 				EndPrimitive();																	\n\

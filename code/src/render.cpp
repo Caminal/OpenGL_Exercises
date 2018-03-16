@@ -203,23 +203,33 @@ namespace  MyGeomShader {
 		///To draw only 1 triangle:
 		static const GLchar * vertex_shader_source[] =
 		{
-			"#version 330\n\
-			\n\
-			void main() {\n\
-			gl_Position = vec4( 1, -0.25, 0.5, 1.0);\n\
+			"#version 330											\n\
+																	\n\
+			void main() {											\n\
+			gl_Position = vec4( 1, -0.25, 0.5, 1.0);				\n\
 			}" };
 
 
 
 		static const GLchar * fragment_shader_source[] =
 		{
-			"#version 330\n\
-			\n\
-			out vec4 color;\n\
-			\n\
-			void main() {\n\
-			color = vec4(0.0,0.8,1.0,1.0);\n\
+			"#version 330														\n\
+																				\n\
+			out vec4 color;														\n\
+																				\n\
+			void main() {														\n\
+			const vec4 colors[6] = vec4[6](vec4( 0, 1, 0, 1.0),					\n\
+											vec4(0.25, 0.25, 0.5, 1.0),			\n\
+											vec4( 1, 0.25, 0.5, 1.0),			\n\
+											vec4(0.25, 0, 0, 1.0),				\n\
+											vec4( 1, 0, 0, 1.0),				\n\
+											vec4( 0.25, 0.25, 0.5, 1.0));		\n\
+			color = colors[gl_PrimitiveID ];									\n\
 			}" };
+
+
+
+
 
 
 		
@@ -283,29 +293,138 @@ namespace  MyGeomShader {
 		*/
 
 
-
-		///exercise 7: make the cube face rotate (with trigonometry)
-		static const GLchar * geom_shader_source[] =
+		
+		///exercise 7 a: make the cube face rotate (with trigonometry)
+		/*static const GLchar * geom_shader_source[] =
 		{
 		"#version 330																		\n\
 		uniform float time;																	\n\
-		uniform mat4 mvpMat;																\n\
 		layout(triangles) in;																\n\
 		layout(triangle_strip, max_vertices = 4) out;										\n\
-																							\n\
+		vec4 vertices[4] = vec4[4](vec4(0.25*cos(time) , -0.25, 0.5*sin(time), 1.0),		\n\
+		vec4(0.25*cos(time)  , 0.25, 0.5*sin(time), 1.0),			\n\
+		vec4(-0.25*cos(time)  , -0.25, 0.5*sin(time), 1.0),		\n\
+		vec4(-0.25*cos(time)  , 0.25, 0.5*sin(time), 1.0));		\n\
+		\n\
 		void main()																			\n\
 		{																					\n\
-			vec4 vertices[4] = vec4[4](vec4(0.25, -0.25, 0.5, 1.0),							\n\
-									   vec4(0.25, 0.25, 0.5, 1.0),						    \n\
-							           vec4(-0.25, -0.25, 0.5, 1.0),                        \n\
-							           vec4(-0.25, 0.25, 0.5, 1.0));					    \n\
-			for(int i= 0; i<4; i++){														\n\
-				gl_Position = mvpMat*vertices[i];											\n\
-				EmitVertex();																\n\
-			}																				\n\
-			EndPrimitive();																	\n\
+		for(int i= 0; i<4; i++){														\n\
+		gl_Position = gl_in[0].gl_Position  + vertices[i];							\n\
+		EmitVertex();																\n\
+		}																				\n\
+		EndPrimitive();																	\n\
 		}"
 		};
+		*/
+		///exercise 7 b: make the cube face rotate (with transformation matrix)
+
+		/*
+		static const GLchar * geom_shader_source[] =
+		{ "#version 330															\n\
+		uniform float time;													\n\
+		uniform mat4 mvpMat;												\n\
+		layout(triangles) in;												\n\
+		layout(triangle_strip,max_vertices = 6) out;						\n\
+		void main(){														\n\
+		vec4 vertices[4]=vec4[4](vec4( 0.25, -0.25,0, 1.0),				\n\
+		vec4(0.25, 0.25, 0, 1.0),				\n\
+		vec4( -0.25,  -0.25, 0, 1.0),			\n\
+		vec4(-0.25,0.25,0,1.0));				\n\
+		for(int i = 0; i < 4; i++){										\n\
+		gl_Position = mvpMat*vertices[i];							\n\
+		EmitVertex();												\n\
+		}																\n\
+		\n\
+		EndPrimitive();													\n\
+		}" };
+
+		*/
+
+		static const GLchar * geom_shader_source[] = {
+			"#version 330																		\n\
+			uniform mat4 rotation;																\n\
+			layout(triangles) in;																\n\
+			layout(triangle_strip, max_vertices = 24) out;										\n\
+			void main()																			\n\
+			{																					\n\
+				const vec4 vertices[4] = vec4[4](vec4(0.25, -0.25, 0.25, 1.0),					\n\
+										vec4(0.25, 0.25, 0.25, 1.0),							\n\
+										vec4(-0.25, -0.25, 0.25, 1.0),							\n\
+										vec4(-0.25, 0.25, 0.25, 1.0));							\n\
+																								\n\
+				//CARA 1																		\n\
+				for (int i = 0; i<4; i++)														\n\
+				{																				\n\
+					gl_Position = rotation*vertices[i]+gl_in[0].gl_Position;					\n\
+					gl_PrimitiveID = 0;															\n\
+					EmitVertex();																\n\
+				}																				\n\
+				EndPrimitive();																	\n\
+																								\n\
+				//CARA 2																		\n\
+				const vec4 vertices2[4]= vec4[4](vec4(0.25, 0.25, 0.25, 1.0),					\n\
+										vec4(0.25, 0.25, -0.25, 1.0),							\n\
+										vec4(-0.25, 0.25, 0.25, 1.0),							\n\
+										vec4(-0.25, 0.25, -0.25, 1.0));							\n\
+				for (int i = 0; i<4; i++)														\n\
+				{																				\n\
+					gl_Position = rotation*vertices2[i]+gl_in[0].gl_Position;					\n\
+gl_PrimitiveID = 1;																				\n\
+					EmitVertex();																\n\
+				}																				\n\
+				EndPrimitive();																	\n\
+				//CARA 3																		\n\
+				const vec4 vertices3[4]= vec4[4](vec4(-0.25, -0.25, 0.25, 1.0),					\n\
+										vec4(-0.25, 0.25, 0.25, 1.0),							\n\
+										vec4(-0.25, -0.25, -0.25, 1.0),							\n\
+										vec4(-0.25, 0.25, -0.25, 1.0));							\n\
+				for (int i = 0; i<4; i++)														\n\
+				{																				\n\
+					gl_Position = rotation*vertices3[i]+gl_in[0].gl_Position;					\n\
+gl_PrimitiveID = 2;																				\n\
+					EmitVertex();																\n\
+				}																				\n\
+				EndPrimitive();																	\n\
+				//CARA 4																		\n\
+				const vec4 vertices4[4]= vec4[4](vec4(-0.25, -0.25, -0.25, 1.0),				\n\
+										vec4(-0.25, 0.25, -0.25, 1.0),							\n\
+										vec4(0.25, -0.25, -0.25, 1.0),							\n\
+										vec4(0.25, 0.25, -0.25, 1.0));							\n\
+				for (int i = 0; i<4; i++)														\n\
+				{																				\n\
+					gl_Position = rotation*vertices4[i]+gl_in[0].gl_Position;					\n\
+gl_PrimitiveID = 3;																				\n\
+					EmitVertex();																\n\
+				}																				\n\
+				EndPrimitive();																	\n\
+				//CARA 5																		\n\
+				const vec4 vertices5[4]= vec4[4](vec4(-0.25, -0.25, 0.25, 1.0),					\n\
+										vec4(-0.25, -0.25, -0.25, 1.0),							\n\
+										vec4(0.25, -0.25, 0.25, 1.0),							\n\
+										vec4(0.25, -0.25, -0.25, 1.0));							\n\
+				for (int i = 0; i<4; i++)														\n\
+				{																				\n\
+					gl_Position = rotation*vertices5[i]+gl_in[0].gl_Position;					\n\
+gl_PrimitiveID = 4;																				\n\
+					EmitVertex();																\n\
+				}																				\n\
+				EndPrimitive();																	\n\
+				//CARA 6																		\n\
+				const vec4 vertices6[4]= vec4[4](vec4(0.25, -0.25, -0.25, 1.0),					\n\
+										vec4(0.25, 0.25, -0.25, 1.0),							\n\
+										vec4(0.25, -0.25, 0.25, 1.0),							\n\
+										vec4(0.25, 0.25, 0.25, 1.0));							\n\
+				for (int i = 0; i<4; i++)														\n\
+				{																				\n\
+					gl_Position = rotation*vertices6[i]+gl_in[0].gl_Position;					\n\
+gl_PrimitiveID = 5;																				\n\
+					EmitVertex();																\n\
+				}																				\n\
+				EndPrimitive();																	\n\
+			}"
+		};
+
+
 
 		GLuint vertex_shader;
 		GLuint geom_shader;
@@ -349,17 +468,45 @@ namespace  MyGeomShader {
 		glBindVertexArray(myVAO);
 	}
 
-	///exercise 7 b: make the cube face rotate (with transformation matrix)
+	///until 7a
+	/*
+	void myRenderCode(double currentTime) {
+	glUseProgram(myRenderProgram);
+	glUniform1f(glGetUniformLocation(myRenderProgram, "time"), (GLfloat)currentTime);
+	//	glUniform4f(glGetUniformLocation(myRenderProgram, "initPos"), 0.0f,0.0f,-1.0f,0.0f);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	}
+	*/
+
+
+	///7b. make the triangle rotate on itself
+
+	/*
 	glm::mat4 myMVP;
 	void myRenderCode(double currentTime) {
-		glUseProgram(myRenderProgram);
-		glUniform1f(glGetUniformLocation(myRenderProgram, "time"), (GLfloat)currentTime);
-		//glm::mat4 rot = glm::rotate(glm::mat4(),0.05f, glm::vec3(0.0f, 1.0f, 0.0f));
-		//myMVP = rot * myMVP;
-		glUniformMatrix4fv(glGetUniformLocation(myRenderProgram, "mvpMat"), 1, GL_FALSE, glm::value_ptr(myMVP));
-	
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+	glUseProgram(myRenderProgram);
+	glUniform1f(glGetUniformLocation(myRenderProgram, "time"), (GLfloat)currentTime);
+	glm::mat4 rot = glm::rotate(glm::mat4(), 0.05f, glm::vec3(0.f, 1.f, 0.f));
+	myMVP = rot *myMVP;
+	glUniformMatrix4fv(glGetUniformLocation(myRenderProgram, "mvpMat"), 1, GL_FALSE, glm::value_ptr(myMVP));
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
+	*/
+
+	///exercise 8
+	void myRenderCode(double currentTime) {
+
+		glUseProgram(myRenderProgram);
+		glm::mat4 rotation = { cos(currentTime), 0.f, -sin(currentTime), 0.f,
+			0.f, 1.f, 0.f, 0.f,
+			sin(currentTime), 0.f, cos(currentTime), 0.f,
+			0.f, 0.f, 0.f, 1.f };
+		glUniformMatrix4fv(glGetUniformLocation(myRenderProgram, "rotation"), 1, GL_FALSE, glm::value_ptr(RV::_MVP));
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	}
+
 }
 
 ////////////////////////////////////////////////// BOX

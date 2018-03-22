@@ -187,20 +187,21 @@ namespace  MyGeomShader {
 	GLuint myVAO;
 
 	GLuint myShaderCompile(void) {
-		/*
+		
 		static const GLchar * vertex_shader_source[] =
 		{
 		"#version 330																			\n\
 																								\n\
 		void main() {																			\n\
-		const vec4 vertices[3] = vec4[3](vec4( 1, -0.25, 0.5, 1.0),								\n\
-		vec4(0.25, 0.25, 0.5, 1.0),																\n\
-		vec4( -0.25,  -0.25, 0.5, 1.0));														\n\
+		const vec4 vertices[3] = vec4[3](vec4( 0, 6, 0, 1.0),								\n\
+		vec4(10, 6, 0, 1.0),																\n\
+		vec4( 5,  6, 0, 1.0));														\n\
 		gl_Position = vertices[gl_VertexID];													\n\
-		}"	};*/
+		}"	};
 
 
 		///To draw only 1 triangle:
+		/*
 		static const GLchar * vertex_shader_source[] =
 		{
 			"#version 330																		\n\
@@ -209,7 +210,7 @@ namespace  MyGeomShader {
 			gl_Position = vec4( 0, 6, 0, 1.0);													\n\
 			}" };
 
-
+			*/
 
 		static const GLchar * fragment_shader_source[] =
 		{
@@ -347,10 +348,36 @@ namespace  MyGeomShader {
 			layout(triangle_strip, max_vertices = 24) out;										\n\
 			void main()																			\n\
 			{																					\n\
+				//Cara 1-----------------------                                                 \n\
 				const vec4 vertices[4] = vec4[4](vec4(0.25, -0.25, 0.25, 1.0),					\n\
 										 vec4(0.25, 0.25, 0.25, 1.0),							\n\
 										 vec4(-0.25, -0.25, 0.25, 1.0),							\n\
 										 vec4(-0.25, 0.25, 0.25, 1.0));							\n\
+				//Cara 2-----------------------                                                 \n\
+				const vec4 vertices2[4]= vec4[4](vec4(0.25, 0.25, 0.25, 1.0),					\n\
+										 vec4(0.25, 0.25, -0.25, 1.0),							\n\
+										 vec4(-0.25, 0.25, 0.25, 1.0),							\n\
+										 vec4(-0.25, 0.25, -0.25, 1.0));						\n\
+				//Cara 3-----------------------                                                 \n\
+				const vec4 vertices3[4]= vec4[4](vec4(-0.25, -0.25, 0.25, 1.0),					\n\
+										 vec4(-0.25, 0.25, 0.25, 1.0),							\n\
+										 vec4(-0.25, -0.25, -0.25, 1.0),						\n\
+										 vec4(-0.25, 0.25, -0.25, 1.0));						\n\
+				//Cara 4-----------------------                                                 \n\
+				const vec4 vertices4[4]= vec4[4](vec4(-0.25, -0.25, -0.25, 1.0),				\n\
+										 vec4(-0.25, 0.25, -0.25, 1.0),							\n\
+										 vec4(0.25, -0.25, -0.25, 1.0),							\n\
+										 vec4(0.25, 0.25, -0.25, 1.0));							\n\
+				//Cara 5-----------------------                                                 \n\
+				const vec4 vertices5[4]= vec4[4](vec4(-0.25, -0.25, 0.25, 1.0),					\n\
+										 vec4(-0.25, -0.25, -0.25, 1.0),						\n\
+										 vec4(0.25, -0.25, 0.25, 1.0),							\n\
+										 vec4(0.25, -0.25, -0.25, 1.0));						\n\
+				//Cara 6-----------------------                                                 \n\
+				const vec4 vertices6[4]= vec4[4](vec4(0.25, -0.25, -0.25, 1.0),					\n\
+										 vec4(0.25, 0.25, -0.25, 1.0),							\n\
+										 vec4(0.25, -0.25, 0.25, 1.0),							\n\
+										 vec4(0.25, 0.25, 0.25, 1.0));							\n\
 																								\n\
 				//Cara 1------------------														\n\
 				for (int i = 0; i<4; i++)														\n\
@@ -362,10 +389,6 @@ namespace  MyGeomShader {
 				EndPrimitive();																	\n\
 																								\n\
 				//Cara 2------------------														\n\
-				const vec4 vertices2[4]= vec4[4](vec4(0.25, 0.25, 0.25, 1.0),					\n\
-										 vec4(0.25, 0.25, -0.25, 1.0),							\n\
-										 vec4(-0.25, 0.25, 0.25, 1.0),							\n\
-										 vec4(-0.25, 0.25, -0.25, 1.0));						\n\
 				for (int i = 0; i<4; i++)														\n\
 				{																				\n\
 					gl_Position = rotation*vertices2[i]+gl_in[0].gl_Position;					\n\
@@ -375,10 +398,6 @@ namespace  MyGeomShader {
 				EndPrimitive();																	\n\
 																								\n\
 				//Cara 3-----------------														\n\
-				const vec4 vertices3[4]= vec4[4](vec4(-0.25, -0.25, 0.25, 1.0),					\n\
-										 vec4(-0.25, 0.25, 0.25, 1.0),							\n\
-										 vec4(-0.25, -0.25, -0.25, 1.0),						\n\
-										 vec4(-0.25, 0.25, -0.25, 1.0));						\n\
 				for (int i = 0; i<4; i++)														\n\
 				{																				\n\
 					gl_Position = rotation*vertices3[i]+gl_in[0].gl_Position;					\n\
@@ -388,10 +407,6 @@ namespace  MyGeomShader {
 				EndPrimitive();																	\n\
 																								\n\
 				//Cara 4----------------														\n\
-				const vec4 vertices4[4]= vec4[4](vec4(-0.25, -0.25, -0.25, 1.0),				\n\
-										 vec4(-0.25, 0.25, -0.25, 1.0),							\n\
-										 vec4(0.25, -0.25, -0.25, 1.0),							\n\
-										 vec4(0.25, 0.25, -0.25, 1.0));							\n\
 				for (int i = 0; i<4; i++)														\n\
 				{																				\n\
 					gl_Position = rotation*vertices4[i]+gl_in[0].gl_Position;					\n\
@@ -401,10 +416,6 @@ namespace  MyGeomShader {
 				EndPrimitive();																	\n\
 																								\n\
 				//Cara 5----------------														\n\
-				const vec4 vertices5[4]= vec4[4](vec4(-0.25, -0.25, 0.25, 1.0),					\n\
-										 vec4(-0.25, -0.25, -0.25, 1.0),						\n\
-										 vec4(0.25, -0.25, 0.25, 1.0),							\n\
-										 vec4(0.25, -0.25, -0.25, 1.0));						\n\
 				for (int i = 0; i<4; i++)														\n\
 				{																				\n\
 					gl_Position = rotation*vertices5[i]+gl_in[0].gl_Position;					\n\
@@ -414,10 +425,6 @@ namespace  MyGeomShader {
 				EndPrimitive();																	\n\
 																								\n\
 				//Cara 6----------------														\n\
-				const vec4 vertices6[4]= vec4[4](vec4(0.25, -0.25, -0.25, 1.0),					\n\
-										 vec4(0.25, 0.25, -0.25, 1.0),							\n\
-										 vec4(0.25, -0.25, 0.25, 1.0),							\n\
-										 vec4(0.25, 0.25, 0.25, 1.0));							\n\
 				for (int i = 0; i<4; i++)														\n\
 				{																				\n\
 					gl_Position = rotation*vertices6[i]+gl_in[0].gl_Position;					\n\
